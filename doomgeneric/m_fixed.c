@@ -27,6 +27,7 @@
 
 
 
+#ifndef __mc68000__
 
 // Fixme. __USE_C_FIXED__ or something.
 
@@ -59,4 +60,6 @@ fixed_t FixedDiv(fixed_t a, fixed_t b)
 	return (fixed_t) result;
     }
 }
+
+#endif
 

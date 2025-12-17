@@ -33,11 +33,7 @@ clean:
 	rm -f $(OUTPUT).gdb
 	rm -f $(OUTPUT).map
 
-$(OUTPUT):	$(OBJS)
-	#@echo "\033[31;1mNB varargs compiles incorrect code (no link frame), with -O1, so recompile it\033[0m"
-	#/opt/homebrew/Cellar/gcc-cross-m68k@13/13.1.0/bin/m68k-elf-gcc -fcall-used-d2 -fcall-used-a2 -nostdinc -I ~/projects/tek4404/development/mirror2.0_net2.1/lib/include  -w  -U__GNUC__ -U__STDC__ -m68010  -fleading-underscore -c -O0 -DCMAP256 -DDOOMGENERIC_RESX=320 -DDOOMGENERIC_RESY=200 -DNORMALUNIX -DLINUX -DSNDSERV -D_DEFAULT_SOURCE -D__BYTE_ORDER__=__ORDER_BIG_ENDIAN__ tek4404crt.c
-	#~/projects/tek4404/development/UniflexEmu/elf32touniflex tek4404crt.o 
-	
+$(OUTPUT):	$(OBJS)	
 	@echo [Linking $@]
 	~/projects/tek4404/development/UniflexEmu/rcat -c -o doom1.r dummy.o.r am_map.o.r doomdef.o.r doomstat.o.r dstrings.o.r d_event.o.r d_items.o.r d_iwad.o.r d_loop.o.r d_main.o.r d_mode.o.r d_net.o.r f_finale.o.r f_wipe.o.r g_game.o.r hu_lib.o.r hu_stuff.o.r info.o.r i_cdmus.o.r i_endoom.o.r i_joystick.o.r i_scale.o.r i_sound.o.r i_system.o.r i_timer.o.r memio.o.r m_argv.o.r m_bbox.o.r m_cheat.o.r m_config.o.r m_controls.o.r m_fixed.o.r m_menu.o.r m_misc.o.r m_random.o.r p_ceilng.o.r 
 

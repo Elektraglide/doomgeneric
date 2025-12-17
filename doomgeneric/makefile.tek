@@ -49,9 +49,11 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
 $(OBJDIR)/%.o:	%.c
-	@echo [Compiling $<]
-	sed 's/%i/%d/g' $< | sed 's/\"rb\"/\"r\"/g' | sed 's/\"wb\"/\"w\"/g' | sed 's/\\n/\\015/g' > _$<
-	$(VB)$(CC) $<
+	@echo [Compiling $< $@ $*]
+	sed 's/%i/%d/g' $< | sed 's/%p/0x%8.8x/g' | sed 's/\"rb\"/\"r\"/g' | sed 's/\"wb\"/\"w\"/g' | sed 's/\\n/\\015/g' > $*.tek.c
+	$(VB)$(CC) $*.tek.c
+	mv $*.tek.o $*.o
+	mv $*.tek.o.r $*.o.r
 
 print:
 	@echo OBJS: $(OBJS)

@@ -118,6 +118,9 @@ static unsigned char convertToDoomKey(unsigned char key)
 {
 	switch (key)
 	{
+	case 0x09:
+		key = KEY_TAB;
+		break;
 	case 0x0d:
 		key = KEY_ENTER;
 		break;
@@ -357,6 +360,23 @@ unsigned char gamma_lut[256] = {
 
   };
 
+
+DG_drawcolumn(int dc_x, int dc_yl, int dc_yh)
+{
+		unsigned char *dst = (unsigned char *)screen->addr;
+		unsigned char mask;
+		
+		dst += dc_yl * 128;
+		dst += dc_x>>3;
+		
+		mask = 0x80 >> (dc_x & 7);
+		while (dc_yl++ < dc_yh)
+		{
+			*dst |= mask;
+			dst += 128;
+		}
+}
+
 void cleanup(void)
 {
 		fprintf(stderr,"tek4404: cleanup\015");
@@ -420,9 +440,9 @@ void DG_DrawFrame()
 		for (i=0; i<256; i++)
 		{
 				/* BGR */
-				lum = (gamma_lut[colors[i][2]] * 3 + gamma_lut[colors[i][1]] * 5 + gamma_lut[colors[i][0]] * 2) / 10;
+				lum = (gamma_lut[colors[i][2]] * 30 + gamma_lut[colors[i][1]] * 59 + gamma_lut[colors[i][0]] * 11) / 100;
 				// rely on doom gamma
-				//lum = (colors[i][2] * 3 + colors[i][1] * 5 + colors[i][0] * 2) / 10;
+				//lum = (colors[i][2] * 30 + colors[i][1] * 59 + colors[i][0] * 11) / 100;
 				
 				// inverse video
 				lum = 255 - lum;
@@ -453,10 +473,11 @@ void DG_DrawFrame()
 		/* 2x2 fat pixels */
 		dst += 128 * 2 - (DOOMGENERIC_RESX / 4) ;
 	}
+
 }
 
 /* NB slow clock by ... */
-#define SLOWCLK 4
+#define SLOWCLK 2
 
 void DG_SleepMs(unsigned int ms)
 {
@@ -507,6 +528,11 @@ int DG_GetKey(int* pressed, unsigned char* key)
 		if (rc == 1)
 		{
 			*pressed = 1;
+			if (buffer[0] == 'm')
+			{
+				*key = KEY_TAB;
+			}
+			else
 			if (buffer[0] == 0x1b)
 			{
 				*key = KEY_ESCAPE;
@@ -580,24 +606,11 @@ int DG_GetKey(int* pressed, unsigned char* key)
 
 int main(int argc, char **argv)
 {
-	fixed_t a = 10 << 16;
-	fixed_t b = 50 << 16;
-	fixed_t c;
-	
-	c = FixedDiv(a,b);
-	printf("c = %8.8x\015",c);
-	c = FixedDiv(10<<16, 1<<14);
-	printf("c = %8.8x\015",c);
-	c = FixedDiv(200<<16, 1<<14);
-	printf("c = %8.8x\015",c);
-	c = FixedDiv(300<<16, 1<<14);
-	printf("c = %8.8x\015",c);
 
-getchar();
-
+#if 1
 		// limit stdout to 5 last lines
-		printf("\033[28;5r");
-
+		printf("\033[22;32r\015");
+#endif
 
     doomgeneric_Create(argc, argv);
 
